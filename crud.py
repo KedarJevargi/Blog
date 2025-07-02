@@ -3,8 +3,11 @@ from models import Blog,User
 from schema.blogpost import BlogPost, BlogUpdate
 from schema.users import AddUser
 import models
+from passlib.context import CryptContext
+from fastapi import HTTPException, status
 
-from fastapi import HTTPException, status,Response
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_blog(data: BlogPost, db: Session):
     new_blog = Blog(title=data.title, body=data.body)
@@ -70,11 +73,23 @@ def update_id(id: int, data: BlogUpdate, db: Session):
 
 
 def create_user(data:AddUser, db: Session):
-    new_user = User(name=data.name, email=data.email, password=data.password)
+    hashedPassword=pwd_context.hash(data.password)
+    new_user = User(name=data.name, email=data.email, password=hashedPassword)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+
+
+def u_get_all_blog(db: Session):
+    users = db.query(models.User).all()
+    if not users:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No blogs available"
+        )
+    return users
 
 
     

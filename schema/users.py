@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import Annotated
+from typing import Optional
 
 class AddUser(BaseModel):
    
@@ -11,3 +12,8 @@ class AddUser(BaseModel):
     @classmethod
     def name_cap(cls, value: str) -> str:
         return value.capitalize()
+    
+class UserOut(BaseModel):
+    name:Optional[str]=None
+    email:Optional[str]=None
+
