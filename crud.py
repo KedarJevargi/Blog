@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from models import Blog
+from models import Blog,User
 from schema.blogpost import BlogPost, BlogUpdate
+from schema.users import AddUser
 import models
 
 from fastapi import HTTPException, status,Response
@@ -66,6 +67,14 @@ def update_id(id: int, data: BlogUpdate, db: Session):
     db.commit()
 
     return {"message": f"Blog with id {id} updated successfully"}
+
+
+def create_user(data:AddUser, db: Session):
+    new_user = User(name=data.name, email=data.email, password=data.password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
 
     
