@@ -1,10 +1,11 @@
 from fastapi import Depends, FastAPI,Response
-from schema.blogpost import BlogPost, BlogUpdate
+from schema.blogpost import BlogPost, BlogUpdate, BlogOut
 from sqlalchemy.orm import Session
 from models import Base
 from database import SessionLocal, engine
 from models import Blog
 from crud import *
+from typing import List
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,11 +22,12 @@ def get_db():
 def home():
     return {"message":"Welcome to home page"}
 
-@app.get("/blogs")
+@app.get("/blogs", response_model=List[BlogOut])
 def get_all(db: Session = Depends(get_db)):
     return get_all_blog(db)
 
-@app.get("/blog/{id}")
+
+@app.get("/blog/{id}",response_model=BlogOut)
 def get_by_id(id:int,db: Session = Depends(get_db)):
     return get_id(id,db)
 

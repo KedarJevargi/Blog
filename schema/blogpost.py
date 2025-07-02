@@ -13,3 +13,13 @@ class BlogPost(BaseModel):
 class BlogUpdate(BaseModel):
     title: Optional[str] = None
     body: Optional[str] = None
+
+
+class BlogOut(BaseModel):
+    title: Annotated[str, Field(..., max_length=20, description="Title of the blog")]
+    body: Annotated[str, Field(..., max_length=1000, description="Body of the blog")]
+    class Config:
+        orm_mode = True
+    
+
+        
