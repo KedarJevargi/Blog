@@ -91,6 +91,16 @@ def u_get_all_blog(db: Session):
         )
     return users
 
+def u_get_id(id:int, db:Session):
+    user=db.query(models.User).filter(models.User.id==id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {id} not found"
+        )
+    return user
+    
+
 
     
 

@@ -25,42 +25,47 @@ def get_db():
         db.close()
 
 # Home route - simple health check or landing page
-@app.get("/")
+@app.get("/",tags=["Home"])
 def home():
     return {"message": "Welcome to home page"}
 
 # Get all blogs - returns a list of blog posts
-@app.get("/blogs", response_model=List[BlogOut])
+@app.get("/blogs", response_model=List[BlogOut],tags=["Blog's"])
 def get_all(db: Session = Depends(get_db)):
     return get_all_blog(db)
 
-@app.get("/users", response_model=List[UserOut])
+@app.get("/user/{id}", response_model=UserOut,tags=["User's"])
+def u_get_by_id(id: int, db: Session = Depends(get_db)):
+    return u_get_id(id, db)
+
+@app.get("/users", response_model=List[UserOut],tags=["User's"])
 def u_get_all(db: Session = Depends(get_db)):
     return u_get_all_blog(db)
 
 # Route to create a new user
-@app.post("/user",status_code=201)
+@app.post("/user",status_code=201,tags=["User's"])
 def add_user(user: AddUser, db: Session = Depends(get_db)):
     return create_user(user, db)
 
 
 
+
 # Get a specific blog by ID
-@app.get("/blog/{id}", response_model=BlogOut)
+@app.get("/blog/{id}", response_model=BlogOut,tags=["Blog's"])
 def get_by_id(id: int, db: Session = Depends(get_db)):
     return get_id(id, db)
 
 # Create a new blog post
-@app.post("/blog", status_code=201)
+@app.post("/blog", status_code=201,tags=["Blog's"])
 def create(data: BlogPost, db: Session = Depends(get_db)):
     return create_blog(data, db)
 
 # Delete a blog post by ID
-@app.delete("/blog/{id}")
+@app.delete("/blog/{id}",tags=["Blog's"])
 def del_blog(id: int, db: Session = Depends(get_db)):
     return delete_id(id, db)
 
 # Update an existing blog post by ID (partial update supported)
-@app.put("/blog/{id}")
+@app.put("/blog/{id}",tags=["Blog's"])
 def update_blog(id: int, data: BlogUpdate, db: Session = Depends(get_db)):
     return update_id(id, data, db)
