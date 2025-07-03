@@ -18,7 +18,7 @@ def get_all(db: Session = Depends(get_db)):
 
 @router.get("/user/{id}", response_model=UserOut)
 def u_get_by_id(id: int, db: Session = Depends(get_db)):
-    return u_get_id(id, db)
+    return get_user_by_id(id, db)  # updated function name
 
 @router.get("/blog/{id}", response_model=BlogOut)
 def get_by_id(id: int, db: Session = Depends(get_db)):
