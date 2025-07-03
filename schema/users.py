@@ -28,8 +28,9 @@ class UserOut(BaseModel):
         orm_mode = True
 
 class UserLogin(BaseModel):
-    username:Annotated[str, Field(...)]
-    password:Annotated[str, Field(...)]
+    email: EmailStr
+    password: str
+
 
 
 class TokenSchema(BaseModel):
