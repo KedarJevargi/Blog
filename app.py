@@ -50,15 +50,15 @@ def add_user(user: AddUser, db: Session = Depends(get_db)):
 
 
 
-# Get a specific blog by ID
-@app.get("/blog/{id}", response_model=BlogOut,tags=["Blog's"])
+@app.get("/blog/{id}", response_model=BlogOut, tags=["Blogs"])
 def get_by_id(id: int, db: Session = Depends(get_db)):
-    return get_id(id, db)
+    return get_blog_and_creator_by_id(id, db)
+
 
 # Create a new blog post
 @app.post("/blog", status_code=201,tags=["Blog's"])
 def create(data: BlogPost, db: Session = Depends(get_db)):
-    return create_blog(data, db)
+    return create_blog(data, db,1)
 
 # Delete a blog post by ID
 @app.delete("/blog/{id}",tags=["Blog's"])

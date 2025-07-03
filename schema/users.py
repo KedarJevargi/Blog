@@ -1,6 +1,13 @@
 from pydantic import BaseModel, Field, EmailStr, field_validator
-from typing import Annotated
-from typing import Optional
+from typing import Annotated, List
+
+
+class BlogOut(BaseModel):
+    title:str
+    body:str
+    class Config:
+        orm_mode = True
+
 
 class AddUser(BaseModel):
    
@@ -14,6 +21,12 @@ class AddUser(BaseModel):
         return value.capitalize()
     
 class UserOut(BaseModel):
-    name:Optional[str]=None
-    email:Optional[str]=None
+    name:str
+    email:str
+    blogs:List[BlogOut]
+    class Config:
+        orm_mode = True
+
+
+
 

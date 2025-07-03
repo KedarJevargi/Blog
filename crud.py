@@ -9,8 +9,8 @@ from fastapi import HTTPException, status
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def create_blog(data: BlogPost, db: Session):
-    new_blog = Blog(title=data.title, body=data.body)
+def create_blog(data: BlogPost, db: Session, id:int):
+    new_blog = Blog(title=data.title, body=data.body, user_id=id)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -25,19 +25,23 @@ def get_all_blog(db: Session):
         )
     return blogs
 
-def get_id(id: int, db: Session):
+
+def get_blog_and_creator_by_id(id: int, db: Session):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+
     if not blog:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Blog with id {id} not found"
         )
-    return blog
+
+    return blog  # FastAPI will auto-serialize using BlogOut
+
 
 from fastapi import HTTPException, status
 
 def delete_id(id: int, db: Session):
-    blog_query = db.query(models.Blog).filter(models.Blog.id == id)
+    blog_query = db.query(models.Blog).filter(models.Blog.id == id)  # FIXED: blog_id → id
     blog = blog_query.first()
 
     if not blog:
@@ -51,11 +55,12 @@ def delete_id(id: int, db: Session):
 
     return {"message": f"Blog with id {id} deleted successfully"}
 
+
     
 
 
 def update_id(id: int, data: BlogUpdate, db: Session):
-    blog_query = db.query(models.Blog).filter(models.Blog.id == id)
+    blog_query = db.query(models.Blog).filter(models.Blog.id == id)  # FIXED: blog_id → id
     blog = blog_query.first()
 
     if not blog:
@@ -64,12 +69,12 @@ def update_id(id: int, data: BlogUpdate, db: Session):
             detail=f"Blog with id {id} not found"
         )
 
-    update_data = data.model_dump(exclude_unset=True)  # or .dict() if on Pydantic v1
-
-    blog_query.update(update_data, synchronize_session=False) # type: ignore
+    update_data = data.model_dump(exclude_unset=True)  # Pydantic v2
+    blog_query.update(update_data, synchronize_session=False)  # type: ignore
     db.commit()
 
     return {"message": f"Blog with id {id} updated successfully"}
+
 
 
 def create_user(data:AddUser, db: Session):
