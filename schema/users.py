@@ -27,6 +27,11 @@ class UserOut(BaseModel):
     class Config:
         orm_mode = True
 
+class UserLogin(BaseModel):
+    username:Annotated[str, Field(...)]
+    password:Annotated[str, Field(...)]
 
 
-
+class TokenSchema(BaseModel):
+    access_token: str
+    token_type: str
